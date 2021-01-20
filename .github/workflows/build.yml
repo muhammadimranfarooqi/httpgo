@@ -76,26 +76,5 @@ jobs:
 
     - name: Push new image to k8s
       run: |
-        curl -L -k -s --request POST \
-        --url ${{ secrets.IMAGEBOT_URL }}/token \
-        --header 'content-type: application/json' \
-        --data '{
-          "commit": "${{ github.sha }}",
-          "namespace": "http",
-          "repository": "${{ github.repository }}",
-          "tag": "${{steps.get-ref.outputs.tag}}",
-          "image": "cmssw/httpgo",
-          "service": "httpgo"
-          }'
-        curl -L -k -s --request POST \
-        --url ${{ secrets.IMAGEBOT_URL }} \
-        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
-        --header 'content-type: application/json' \
-        --data '{
-          "commit": "${{ github.sha }}",
-          "namespace": "http",
-          "repository": "${{ github.repository }}",
-          "tag": "${{steps.get-ref.outputs.tag}}",
-          "image": "cmssw/httpgo",
-          "service": "httpgo"
-          }'
+        token=`curl -L -k -s --request POST --url ${{ secrets.IMAGEBOT_URL }}/token --header 'Content-Type: application/json' --data '{"commit": "${{ github.sha }}", "namespace": "http", "repository": "${{ github.repository }}", "tag": "${{steps.get-ref.outputs.tag}}", "image": "cmssw/httpgo", "service": "httpgo"}'`
+        curl -L -k -s --request POST --url ${{ secrets.IMAGEBOT_URL }} --header "Authorization: Bearer $token" --header 'Content-Type: application/json' --data '{"commit": "${{ github.sha }}", "namespace": "http", "repository": "${{ github.repository }}", "tag": "${{steps.get-ref.outputs.tag}}", "image": "cmssw/httpgo", "service": "httpgo"}'
