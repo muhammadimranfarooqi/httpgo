@@ -76,5 +76,10 @@ jobs:
 
     - name: Push new image to k8s
       run: |
-        token=`curl -L -k -s --request POST --url ${{ secrets.IMAGEBOT_URL }}/token --header 'Content-Type: application/json' --data '{"commit": "${{ github.sha }}", "namespace": "http", "repository": "${{ github.repository }}", "tag": "${{steps.get-ref.outputs.tag}}", "image": "cmssw/httpgo", "service": "httpgo"}'`
-        curl -L -k -s --request POST --url ${{ secrets.IMAGEBOT_URL }} --header "Authorization: Bearer $token" --header 'Content-Type: application/json' --data '{"commit": "${{ github.sha }}", "namespace": "http", "repository": "${{ github.repository }}", "tag": "${{steps.get-ref.outputs.tag}}", "image": "cmssw/httpgo", "service": "httpgo"}'
+        cat > /tmp/payload.json << EOF
+        {"commit": "${{ github.sha }}", "namespace": "http", "repository": "${{ github.repository }}", "tag": "${{steps.get-ref.outputs.tag}}", "image": "cmssw/httpgo", "service": "httpgo"}
+        EOF
+        cat /tmp/payload.json
+        token=`curl -L -k -s -X POST -H "Content-Type: application/json" -d@/tmp/payload.json ${{ secrets.IMAGEBOT_URL }}/token`
+        echo "$token"
+        curl -v -L -k -s -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d@/tmp/payload.json ${{ secrets.IMAGEBOT_URL }}
