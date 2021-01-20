@@ -73,3 +73,29 @@ jobs:
         load: true
         tags: cmssw/httpgo:${{steps.get-ref.outputs.tag}}
     - run: docker push cmssw/httpgo:${{steps.get-ref.outputs.tag}}
+
+    - name: Push new image to k8s
+      run: |
+        curl --request POST \
+        --url ${{ secrets.IMAGEBOT_URL }}/token \
+        --header 'content-type: application/json' \
+        --data '{
+          "commit": "${{ github.sha }}",
+          "namespace": "http",
+          "repository": "${{ github.repository }}",
+          "tag": <repo>/<package>:${{steps.get-ref.outputs.tag}},
+          "image": "${{ github.DOCKER_IMAGE }}",
+          "service": "httpgo"
+          }'
+        curl --request POST \
+        --url ${{ secrets.IMAGEBOT_URL }} \
+        --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+        --header 'content-type: application/json' \
+        --data '{
+          "commit": "${{ github.sha }}",
+          "namespace": "http",
+          "repository": "${{ github.repository }}",
+          "tag": <repo>/<package>:${{steps.get-ref.outputs.tag}},
+          "image": "${{ github.DOCKER_IMAGE }}",
+          "service": "httpgo"
+          }'
