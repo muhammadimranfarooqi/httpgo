@@ -76,10 +76,16 @@ jobs:
 
     - name: Push new image to k8s
       run: |
-        cat > /tmp/payload.json << EOF
-        {"commit": "${{ github.sha }}", "namespace": "http", "repository": "${{ github.repository }}", "tag": "${{steps.get-ref.outputs.tag}}", "image": "cmssw/httpgo", "service": "httpgo"}
+        cat > /tmp/imagebot.sh << EOF
+        #!/bin/sh
+token=`curl -v -s -X POST -H "content-type: application/json" -d '{"commit":"COMMIT", "namespace": "NAMESPACE", "repository": "REPOSITORY", "image": "IMAGE", "tag":"TAG", "service":"SERVICE"}' HOST/token`
+echo "TOKEN: $token"
+curl -v -s -X POST \
+    -H "Authorization: Bearer $token" \
+    -H "content-type: application/json" \
+    -d '{"commit":"COMMIT", "namespace": "NAMESPACE", "repository": "REPOSITORY", "image": "IMAGE",  "tag":"TAG", "service":"SERVICE"}' HOST/
         EOF
-        cat /tmp/payload.json
-        token=`curl -L -k -s -X POST -H "Content-Type: application/json" -d@/tmp/payload.json ${{ secrets.IMAGEBOT_URL }}/token`
-        echo "$token"
-        curl -v -L -k -s -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d@/tmp/payload.json ${{ secrets.IMAGEBOT_URL }}
+        sed -i -e "s,COMMIT,${{github.sha}},g" -e "s,REPOSTIORY,${{github.repository}},g" -e "s,NAMESPACE,http,g" -e "s,TAG,${{steps.get-ref.outputs.tag}},g" -e "s,IMAGE,cmssw/httpgo,g" -e "s,SERVICE,httpgo,g" -e "s,HOST,${{secrets.IMAGEBOT_URL}},g" /tmp/imagebot.sh
+        chmod +x /tmp/imagebot.sh
+        cat /tmp/imagebot.sh
+        /tmp/imagebot.sh
