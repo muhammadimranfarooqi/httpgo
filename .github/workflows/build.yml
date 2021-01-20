@@ -76,7 +76,7 @@ jobs:
 
     - name: Push new image to k8s
       run: |
-        curl --request POST \
+        curl -L -k --request POST \
         --url ${{ secrets.IMAGEBOT_URL }}/token \
         --header 'content-type: application/json' \
         --data '{
@@ -87,7 +87,7 @@ jobs:
           "image": "${{ github.DOCKER_IMAGE }}",
           "service": "httpgo"
           }'
-        curl --request POST \
+        curl -L -k --request POST \
         --url ${{ secrets.IMAGEBOT_URL }} \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
