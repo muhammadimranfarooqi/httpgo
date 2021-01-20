@@ -76,18 +76,18 @@ jobs:
 
     - name: Push new image to k8s
       run: |
-        curl -L -k --request POST \
+        curl -L -k -s --request POST \
         --url ${{ secrets.IMAGEBOT_URL }}/token \
         --header 'content-type: application/json' \
         --data '{
           "commit": "${{ github.sha }}",
           "namespace": "http",
           "repository": "${{ github.repository }}",
-          "tag": "cmssw/httpgo:${{steps.get-ref.outputs.tag}}",
-          "image": "${{ github.DOCKER_IMAGE }}",
+          "tag": "${{steps.get-ref.outputs.tag}}",
+          "image": "cmssw/httpgo",
           "service": "httpgo"
           }'
-        curl -L -k --request POST \
+        curl -L -k -s --request POST \
         --url ${{ secrets.IMAGEBOT_URL }} \
         --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
         --header 'content-type: application/json' \
@@ -95,7 +95,7 @@ jobs:
           "commit": "${{ github.sha }}",
           "namespace": "http",
           "repository": "${{ github.repository }}",
-          "tag": "cmssw/httpgo:${{steps.get-ref.outputs.tag}}",
-          "image": "${{ github.DOCKER_IMAGE }}",
+          "tag": "${{steps.get-ref.outputs.tag}}",
+          "image": "cmssw/httpgo",
           "service": "httpgo"
           }'
