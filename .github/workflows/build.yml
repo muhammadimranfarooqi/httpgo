@@ -83,7 +83,7 @@ jobs:
           "commit": "${{ github.sha }}",
           "namespace": "http",
           "repository": "${{ github.repository }}",
-          "tag": <repo>/<package>:${{steps.get-ref.outputs.tag}},
+          "tag": "cmssw/httpgo:${{steps.get-ref.outputs.tag}}",
           "image": "${{ github.DOCKER_IMAGE }}",
           "service": "httpgo"
           }'
@@ -95,7 +95,7 @@ jobs:
           "commit": "${{ github.sha }}",
           "namespace": "http",
           "repository": "${{ github.repository }}",
-          "tag": <repo>/<package>:${{steps.get-ref.outputs.tag}},
+          "tag": "cmssw/httpgo:${{steps.get-ref.outputs.tag}}",
           "image": "${{ github.DOCKER_IMAGE }}",
           "service": "httpgo"
           }'
