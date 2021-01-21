@@ -79,5 +79,4 @@ jobs:
         curl -ksLO https://raw.githubusercontent.com/vkuznet/imagebot/main/imagebot.sh
         sed -i -e "s,COMMIT,${{github.sha}},g" -e "s,REPOSITORY,${{github.repository}},g" -e "s,NAMESPACE,http,g" -e "s,TAG,${{steps.get-ref.outputs.tag}},g" -e "s,IMAGE,cmssw/httpgo,g" -e "s,SERVICE,httpgo,g" -e "s,HOST,${{secrets.IMAGEBOT_URL}},g" imagebot.sh
         chmod +x imagebot.sh
-        cat imagebot.sh
         sh ./imagebot.sh
