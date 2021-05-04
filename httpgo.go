@@ -80,7 +80,7 @@ func parseConfig(configFile string) error {
 func info() string {
 	goVersion := runtime.Version()
 	tstamp := time.Now().Format("2006-02-01")
-	return fmt.Sprintf("auth-proxy-server git=%s go=%s date=%s", version, goVersion, tstamp)
+	return fmt.Sprintf("httpgo git=%s go=%s date=%s", version, goVersion, tstamp)
 }
 
 // main function
