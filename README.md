@@ -1,2 +1,2 @@
 # httpgo
-Simple example of HTTP Go server for test.
+Simple example of HTTP Go server for demo.
